@@ -1,0 +1,39 @@
+[
+    {
+    "Team": "AWS",
+    "Engineers": [
+        {
+            "Firstname": "Boris",
+            "Lastname": "Yakimov",
+            "Level": "Senior",
+            "TrackedHours": 108,
+            "TrackingMonth": "August",
+            "TrackingYear": "2020"
+        },
+        {
+            "Firstname": "YName2",
+            "Lastname": "name2",
+            "Level": "Senior",
+            "TrackedHours": 157,
+            "TrackingMonth": "August",
+            "TrackingYear": "2020"
+        },
+        {
+            "Firstname": "NName3",
+            "Lastname": "name3",
+            "Level": "Mid",
+            "TrackedHours": 111,
+            "TrackingMonth": "August",
+            "TrackingYear": "2020"
+        },
+        {
+            "Firstname": "KName4",
+            "Lastname": "name4",
+            "Level": "Junior",
+            "TrackedHours": 116,
+            "TrackingMonth": "August",
+            "TrackingYear": "2020"
+        }
+    ] 
+    }
+]
