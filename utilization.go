@@ -6,7 +6,8 @@ import (
 
 func init() {
 	// DB connection
-	// Seed data
+	// Set vars
+	// Initial seed data from JSON
 }
 
 func main() {
