@@ -9,11 +9,13 @@ import (
 	consul "github.com/hashicorp/consul/api"
 	log "github.com/sirupsen/logrus"
 
+	"github.com/burizz/team-utilization/consulkv"
 	"github.com/burizz/team-utilization/teams"
 )
 
 // Configure logging
 func init() {
+	// TODO: configure dotenv file with variables
 	// Log as JSON instead of the default ASCII formatter.
 	log.SetFormatter(&log.TextFormatter{}) // can be &log.JSONFormatter
 
@@ -34,6 +36,7 @@ var kv *consul.KV
 // Configure Consul Key/Value store
 func init() {
 	// TODO: Change address with const
+	// TODO: move consul connection Init to consul.go package
 	// Consul Client
 	client, err := consul.NewClient(consul.DefaultConfig())
 	if err != nil {
@@ -44,41 +47,43 @@ func init() {
 	kv = client.KV()
 }
 
+// TODO: Project / Package structure refactoring
 func main() {
 	var itgixTeams teams.ItgixTeams
-	//var teamVar string = "Team: "
+	var teamVar string = "Team: "
 
 	var seedDataJSON string = "seed/sample_input_data.json"
 
 	// Parse JSON file into team struct
-	if err := parseJSON(seedDataJSON, &itgixTeams); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+	if jsonParseErr := parseJSON(seedDataJSON, &itgixTeams); jsonParseErr != nil {
+		log.Fatalf("Err: %v", jsonParseErr) // exit if json cannot be parsed
 	}
 
-	//teamValue, err := json.Marshal(itgixTeams)
-	//if err != nil {
-	//log.Errorf("Err : %v", err)
-	//}
+	teamValue, err := json.Marshal(itgixTeams)
+	if err != nil {
+		log.Errorf("Err : %v", err)
+	}
 
+	// TODO: Parse each team into separate consul kv pair
+	// TODO: Parse each team member into separate kv / pair
 	for _, value := range itgixTeams.Teams {
 		fmt.Println(value)
 	}
 
 	// Put a new KV pair
-	//if err := setConsulKV(kv, teamVar, teamValue); err != nil {
-	//log.Errorf("setConsulKV: %v", err)
-	//}
+	if setKvPairErr := consulkv.SetConsulKV(kv, teamVar, teamValue); setKvPairErr != nil {
+		log.Fatalf("Err: %v", setKvPairErr) // exit if Consul KV pair cannot be set
+	}
 
 	// Lookup KV pair in Consul
-	if kvPair, err := getConsulKV(kv, "team"); err != nil {
+	if kvPair, getKvPairErr := consulkv.GetConsulKV(kv, "team"); getKvPairErr != nil {
 		fmt.Println(kvPair)
-		log.Errorf("Err: %v", err)
+		log.Errorf("Err: %v", getKvPairErr)
 	}
 }
 
 func parseJSON(filePath string, team *teams.ItgixTeams) error {
-	// Maybe refactor this to take the JSON from URL where it can be uploaded automatically
+	// TODO: Refactor this to take the JSON from URL where it can be uploaded automatically
 	// Read json file and convert to byte slice
 	byteValue, err := ioutil.ReadFile(filePath)
 	if err != nil {
@@ -95,43 +100,4 @@ func parseJSON(filePath string, team *teams.ItgixTeams) error {
 
 	log.Infof("JSON parsed successuflly")
 	return nil
-}
-
-func setConsulKV(kv *consul.KV, consulKey string, consulValue []byte) error {
-	// TODO: add check if key already exists to run the update, otherwise skip it
-
-	// Put a new KV pair
-	kp := &consul.KVPair{Key: consulKey, Value: consulValue}
-
-	// Consul CAS used for Check and Set operation; returns true if successful
-	success, meta, err := kv.CAS(kp, nil)
-	if err != nil {
-		log.Errorf("Consul Set: %v : %v", kv, err)
-		return err
-	}
-
-	if !success {
-		setConsulKV(kv, consulKey, consulValue) // retry setting value
-	} else {
-		log.Debugf("Consul Set: Set Request time: %v", meta.RequestTime)
-		log.Infof("Consul Set: updated key ' %v ' to ' %v '", consulKey, string(consulValue))
-	}
-
-	log.Debugf("Consul: Set key: [%v] / value: [%v]", kp.Key, string(kp.Value))
-	return nil
-}
-
-func getConsulKV(kv *consul.KV, consulKey string) (kValue string, err error) {
-	// Lookup KV pair in Consul
-	kp, meta, err := kv.Get(consulKey, nil)
-
-	log.Debugf("Consul: Get Request time: %v", meta.RequestTime)
-	if err != nil {
-		log.Errorf("Consul Get: %v : %v", kv, err)
-		return "", err
-	}
-	// TODO: Handle if kp is nil
-
-	log.Debugf("Consul: Get key: [%v] value: [%s]\n", kp.Key, kp.Value)
-	return string(kp.Value), nil
 }
