@@ -4,9 +4,14 @@ import (
 	"fmt"
 )
 
-// ItgixTeam - list of devops engineers within a team
-type ItgixTeam struct {
-	Team      string           `json:"team"`
+// ItgixTeams - list of devops teams within company
+type ItgixTeams struct {
+	Teams []Cell `json:"itgixteams"`
+}
+
+// Cell - list of Cells, their function and team members
+type Cell struct {
+	Cell      string           `json:"team"`
 	Engineers []DevOpsEngineer `json:"engineers"`
 }
 
@@ -20,8 +25,9 @@ type DevOpsEngineer struct {
 	TrackingYear  string `json:"trackingYear"`
 }
 
+// TODO: Test methods !
 // GetTeam method - returns a list of all team members
-func (t ItgixTeam) GetTeam(teamName string) []DevOpsEngineer {
+func (t Cell) GetTeam(teamName string) []DevOpsEngineer {
 	return t.Engineers
 }
 

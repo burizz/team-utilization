@@ -1,37 +1,115 @@
 {
-    "team": "AWS",
-    "engineers": [
+    "itgixteams": [
         {
-            "firstname": "Boris",
-            "lastname": "Yakimov",
-            "level": "Senior",
-            "trackedHours": 108,
-            "trackingMonth": "August",
-            "trackingYear": "2020"
+            "team": "AWS",
+            "engineers": [
+                {
+                    "firstname": "Boris",
+                    "lastname": "Yakimov",
+                    "level": "Senior",
+                    "trackedHours": 108,
+                    "trackingMonth": "August",
+                    "trackingYear": "2020"
+                },
+                {
+                    "firstname": "YName2",
+                    "lastname": "name2",
+                    "level": "Senior",
+                    "trackedHours": 157,
+                    "trackingMonth": "August",
+                    "trackingYear": "2020"
+                },
+                {
+                    "firstname": "NName3",
+                    "lastname": "name3",
+                    "level": "Mid",
+                    "trackedHours": 111,
+                    "trackingMonth": "August",
+                    "trackingYear": "2020"
+                },
+                {
+                    "firstname": "KName4",
+                    "lastname": "name4",
+                    "level": "Junior",
+                    "trackedHours": 116,
+                    "trackingMonth": "August",
+                    "trackingYear": "2020"
+                }
+            ] 
         },
         {
-            "firstname": "YName2",
-            "lastname": "name2",
-            "level": "Senior",
-            "trackedHours": 157,
-            "trackingMonth": "August",
-            "trackingYear": "2020"
+            "team": "HybridCloud",
+            "engineers": [
+                {
+                    "firstname": "MTest",
+                    "lastname": "Vtest",
+                    "level": "Senior",
+                    "trackedHours": 108,
+                    "trackingMonth": "August",
+                    "trackingYear": "2020"
+                },
+                {
+                    "firstname": "dfsse2",
+                    "lastname": "nfamwe",
+                    "level": "Senior",
+                    "trackedHours": 157,
+                    "trackingMonth": "August",
+                    "trackingYear": "2020"
+                },
+                {
+                    "firstname": "gfdsgme3",
+                    "lastname": "ngdfse3",
+                    "level": "Mid",
+                    "trackedHours": 111,
+                    "trackingMonth": "August",
+                    "trackingYear": "2020"
+                },
+                {
+                    "firstname": "KasdName4",
+                    "lastname": "nadsfm4",
+                    "level": "Junior",
+                    "trackedHours": 116,
+                    "trackingMonth": "August",
+                    "trackingYear": "2020"
+                }
+            ] 
         },
         {
-            "firstname": "NName3",
-            "lastname": "name3",
-            "level": "Mid",
-            "trackedHours": 111,
-            "trackingMonth": "August",
-            "trackingYear": "2020"
-        },
-        {
-            "firstname": "KName4",
-            "lastname": "name4",
-            "level": "Junior",
-            "trackedHours": 116,
-            "trackingMonth": "August",
-            "trackingYear": "2020"
+            "team": "CrossTech",
+            "engineers": [
+                {
+                    "firstname": "KTest",
+                    "lastname": "Ttest",
+                    "level": "Senior",
+                    "trackedHours": 108,
+                    "trackingMonth": "August",
+                    "trackingYear": "2020"
+                },
+                {
+                    "firstname": "dfgds2",
+                    "lastname": "qweye",
+                    "level": "Senior",
+                    "trackedHours": 157,
+                    "trackingMonth": "August",
+                    "trackingYear": "2020"
+                },
+                {
+                    "firstname": "klsdfe3",
+                    "lastname": "ngdfse3",
+                    "level": "Mid",
+                    "trackedHours": 111,
+                    "trackingMonth": "August",
+                    "trackingYear": "2020"
+                },
+                {
+                    "firstname": "xoytame4",
+                    "lastname": "nadsfm4",
+                    "level": "Junior",
+                    "trackedHours": 116,
+                    "trackingMonth": "August",
+                    "trackingYear": "2020"
+                }
+            ] 
         }
-    ] 
+    ]
 }
