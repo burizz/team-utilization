@@ -15,13 +15,17 @@ import (
 
 func main() {
 	// Load .env config from project root
-	if loadDotEnvErr := godotenv.Load(".env"); loadDotEnvErr != nil {
+	if loadDotEnvErr := godotenv.Load(config.ProjectRootPath + "/.env"); loadDotEnvErr != nil {
 		log.Fatalf("Error loading config: %v", loadDotEnvErr)
+	} else {
+		// TODO: Check why this doesn't print
+		log.Debugf(".env file loaded successfully")
 	}
 
-	// Set loglevel and stuff
+	// Set loglevel, format and output stream
 	config.LoggingConfig()
 
+	// Create Consul client
 	kv, consulInitClientErr := config.ConsulConfig()
 	if consulInitClientErr != nil {
 		log.Fatalf("Consul config: %v", consulInitClientErr)
@@ -30,13 +34,15 @@ func main() {
 	var itgixTeams teams.ItgixTeams
 	var teamVar string = "Team: "
 
-	var seedDataJSON string = "seed/sample_input_data.json"
+	var seedDataJSON string = config.ProjectRootPath + "/seed/sample_input_data.json"
 
+	// TODO: Move JSON func into separate package and leave just the function call
 	// Parse JSON file into team struct
 	if jsonParseErr := parseJSON(seedDataJSON, &itgixTeams); jsonParseErr != nil {
 		log.Fatalf("Err: %v", jsonParseErr) // exit if json cannot be parsed
 	}
 
+	// TODO: Not sure if I need this, probably makes more sense to parse individual parts of the individual teams
 	teamValue, err := json.Marshal(itgixTeams)
 	if err != nil {
 		log.Errorf("Err : %v", err)
@@ -60,6 +66,7 @@ func main() {
 	}
 }
 
+// TODO: move this to a separate package
 func parseJSON(filePath string, team *teams.ItgixTeams) error {
 	// TODO: Refactor this to take the JSON from URL where it can be uploaded automatically
 	byteValue, err := ioutil.ReadFile(filePath)
