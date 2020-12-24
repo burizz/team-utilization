@@ -15,12 +15,18 @@ import (
 
 func main() {
 	// Load .env config from project root
-	if loadDotEnvErr := godotenv.Load(); loadDotEnvErr != nil {
-		log.Fatalf("Config: LoadDotDevConfig: Error loading .env file: %v", loadDotEnvErr)
+	// TODO: fix ../ path
+	if loadDotEnvErr := godotenv.Load("../.env"); loadDotEnvErr != nil {
+		log.Fatalf("Error loading config: %v", loadDotEnvErr)
 	}
 
 	// Set loglevel and stuff
 	config.LoggingConfig()
+
+	kv, consulInitClientErr := config.ConsulConfig()
+	if consulInitClientErr != nil {
+		log.Fatalf("Consul config: %v", consulInitClientErr)
+	}
 
 	var itgixTeams teams.ItgixTeams
 	var teamVar string = "Team: "
@@ -57,7 +63,6 @@ func main() {
 
 func parseJSON(filePath string, team *teams.ItgixTeams) error {
 	// TODO: Refactor this to take the JSON from URL where it can be uploaded automatically
-	// Read json file and convert to byte slice
 	byteValue, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		log.Errorf("parseJSON: Cannot open file: %v - %v", filePath, err)

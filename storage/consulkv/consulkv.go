@@ -5,9 +5,23 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var kv *consul.KV
+// GetConsulKV - get Key/Value pair from Consul KV Store
+func GetConsulKV(kv *consul.KV, consulKey string) (consulValue string, err error) {
+	// Lookup KV pair in Consul
+	kp, meta, kvGetErr := kv.Get(consulKey, nil)
+	// TODO: rename Errors
+	log.Debugf("Consul: Get Request time: %v", meta.RequestTime)
+	if kvGetErr != nil {
+		log.Errorf("Consul Get: %v : %v", kv, kvGetErr)
+		return "", kvGetErr
+	}
+	// TODO: Handle if kp is nil
 
-// SetConsulKV - set a Key/Value pair in Consul KV Store
+	log.Debugf("Consul: Get key: [%v] value: [%s]\n", kp.Key, kp.Value)
+	return string(kp.Value), nil
+}
+
+// SetConsulKV - set Key/Value pair in Consul KV Store
 func SetConsulKV(kv *consul.KV, consulKey string, consulValue []byte) error {
 	// Get current value from KV store
 	pair, _, getKvPairErr := kv.Get(consulKey, nil)
@@ -49,20 +63,4 @@ func SetConsulKV(kv *consul.KV, consulKey string, consulValue []byte) error {
 		log.Infof("Consul Set: value is already present")
 		return nil
 	}
-}
-
-// GetConsulKV - get a Key's Value in Consul KV Store
-func GetConsulKV(kv *consul.KV, consulKey string) (kValue string, err error) {
-	// Lookup KV pair in Consul
-	kp, meta, err := kv.Get(consulKey, nil)
-
-	log.Debugf("Consul: Get Request time: %v", meta.RequestTime)
-	if err != nil {
-		log.Errorf("Consul Get: %v : %v", kv, err)
-		return "", err
-	}
-	// TODO: Handle if kp is nil
-
-	log.Debugf("Consul: Get key: [%v] value: [%s]\n", kp.Key, kp.Value)
-	return string(kp.Value), nil
 }

@@ -1,10 +1,9 @@
 package config
 
 import (
-	"log"
 	"os"
 
-	log "github.com/sirupsen/log"
+	log "github.com/sirupsen/logrus"
 )
 
 func LoggingConfig() {
@@ -14,11 +13,11 @@ func LoggingConfig() {
 
 	switch logFormat {
 	case "TEXT", "TXT":
-		log.SetFormatter(&log.TextFormatter)
+		log.SetFormatter(&log.TextFormatter{})
 	case "JSON", "JSN":
-		log.SetFormatter(&log.JSONFormatter) // log as JSON instead of the default ASCII formatter.
+		log.SetFormatter(&log.JSONFormatter{}) // log as JSON instead of the default ASCII formatter.
 	default:
-		log.SetFormatter(&log.TextFormatter)
+		log.SetFormatter(&log.TextFormatter{})
 	}
 
 	// can be any io.Writer
@@ -47,5 +46,5 @@ func LoggingConfig() {
 		log.SetLevel(log.InfoLevel)
 	}
 
-	log.Infof("LogLevel is set to %v", log.GetLevel)
+	log.Infof("LogLevel is set to %v", log.GetLevel())
 }

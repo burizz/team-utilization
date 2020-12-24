@@ -1,12 +1,10 @@
 package config
 
 import (
-	"log"
 	"os"
 
-	log "github.com/sirupsen/logrus"
-
 	consul "github.com/hashicorp/consul/api"
+	log "github.com/sirupsen/logrus"
 )
 
 func ConsulConfig() (consulClient *consul.KV, err error) {
@@ -17,13 +15,15 @@ func ConsulConfig() (consulClient *consul.KV, err error) {
 		consulAddr = "127.0.0.1:8500"
 	}
 
-	// TODO: Change address with const
+	config := &consul.Config{
+		Address: consulAddr,
+	}
+
 	// Initialize Consul Client
 	//client, consulInitClientErr := consul.NewClient(consul.DefaultConfig())
-	client, consulInitClientErr := consul.NewClient(consul.Config(consulAddr))
-
+	client, consulInitClientErr := consul.NewClient(config)
 	if consulInitClientErr != nil {
-		log.Errorf("ConsulConfig: Error cannot create new consul client: %v", consulInitClientErr)
+		log.Errorf("Error cannot create new consul client: %v", consulInitClientErr)
 		return nil, consulInitClientErr
 	}
 
