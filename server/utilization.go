@@ -15,8 +15,7 @@ import (
 
 func main() {
 	// Load .env config from project root
-	// TODO: fix ../ path
-	if loadDotEnvErr := godotenv.Load("../.env"); loadDotEnvErr != nil {
+	if loadDotEnvErr := godotenv.Load(".env"); loadDotEnvErr != nil {
 		log.Fatalf("Error loading config: %v", loadDotEnvErr)
 	}
 
@@ -31,7 +30,7 @@ func main() {
 	var itgixTeams teams.ItgixTeams
 	var teamVar string = "Team: "
 
-	var seedDataJSON string = "../seed/sample_input_data.json"
+	var seedDataJSON string = "seed/sample_input_data.json"
 
 	// Parse JSON file into team struct
 	if jsonParseErr := parseJSON(seedDataJSON, &itgixTeams); jsonParseErr != nil {
