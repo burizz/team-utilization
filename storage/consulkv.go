@@ -28,7 +28,9 @@ func GetConsulKV(kv *consul.KV, consulKey string) (consulValue string, err error
 }
 
 // SetConsulKV - set Key/Value pair in Consul KV Store
-func SetConsulKV(kv *consul.KV, consulKey string, consulValue []byte) error {
+//func SetConsulKV(kv *consul.KV, consulKey string, consulValue []byte) error {
+func SetConsulKV(kv *consul.KV, consulKey string, consulValue string) error {
+	byteFmtConsulValue := []byte(consulValue)
 	// Get current value from KV store
 	pair, _, getKvPairErr := kv.Get(consulKey, nil)
 	if getKvPairErr != nil {
@@ -37,14 +39,14 @@ func SetConsulKV(kv *consul.KV, consulKey string, consulValue []byte) error {
 	}
 
 	// If current value is empty or different set it now
-	if pair == nil || string(pair.Value) != string(consulValue) {
+	if pair == nil || string(pair.Value) != consulValue {
 		var kp *consul.KVPair
 		if pair == nil {
-			kp = &consul.KVPair{Key: consulKey, Value: consulValue}
+			kp = &consul.KVPair{Key: consulKey, Value: byteFmtConsulValue}
 		} else {
 			// modifying index used for additional verification, will update key only if
 			// it matches the last index that modified this key - https://www.consul.io/api/kv.html#modifyindex
-			kp = &consul.KVPair{Key: consulKey, Value: consulValue, ModifyIndex: pair.ModifyIndex}
+			kp = &consul.KVPair{Key: consulKey, Value: byteFmtConsulValue, ModifyIndex: pair.ModifyIndex}
 		}
 
 		// Consul kv.CAS used for Check and Set operation; returns true if successful

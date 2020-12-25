@@ -12,13 +12,13 @@ type ItgixTeams struct {
 	Teams []Team `json:"itgixteams"`
 }
 
-// Team - list of Cells, their function and team members
+// Team - list of Cells, their function, and team members
 type Team struct {
 	Name      string           `json:"team"`
 	Engineers []DevOpsEngineer `json:"engineers"`
 }
 
-// DevOpsEngineer - engineer definition
+// DevOpsEngineer - defines devops engineer
 type DevOpsEngineer struct {
 	Firstname     string `json:"firstname"`
 	Lastname      string `json:"lastname"`
@@ -29,21 +29,21 @@ type DevOpsEngineer struct {
 }
 
 // GetTeam method - returns a slice of all team members - type []DevOpsEngineer
-func (t Team) GetTeam(teamName string) []DevOpsEngineer {
+func (t Team) GetTeam() []DevOpsEngineer {
 	return t.Engineers
 }
 
 // GetTeamMarshalled - returns a []byte slice of all team members
-func (t Team) GetTeamMarshalled(teamName string) []byte {
+func (t Team) GetTeamMarshalled() string {
 	parsedEngineers, jsonMarshalErr := json.Marshal(t.Engineers)
 	if jsonMarshalErr != nil {
 		log.Errorf("Cannot marshal JSON to string %v", jsonMarshalErr)
 	}
-	return parsedEngineers
+	return string(parsedEngineers)
 }
 
 // GetTeamString - returns a []byte slice of all team members
-func (t Team) GetTeamString(teamName string) string {
+func (t Team) GetTeamString() string {
 	parsedEngineers, jsonMarshalErr := json.Marshal(t.Engineers)
 	if jsonMarshalErr != nil {
 		log.Errorf("Cannot marshal JSON to string %v", jsonMarshalErr)
@@ -52,19 +52,19 @@ func (t Team) GetTeamString(teamName string) string {
 }
 
 // GetEngineer - returns all details of an engineer
-func (e DevOpsEngineer) GetEngineer(engineerName string) string {
+func (e DevOpsEngineer) GetEngineer() string {
 	// TODO: Fix this
 	return fmt.Sprintf("%v %v %v", e.Firstname, e.Lastname, e.Level)
 }
 
 // GetName - returns Firstname and Lastname of an engineer
-func (e DevOpsEngineer) GetName(engineerName string) string {
+func (e DevOpsEngineer) GetName() string {
 	// TODO: Fix this
 	return fmt.Sprintf("%v %v", e.Firstname, e.Lastname)
 }
 
 // GetTracking - returns tracking information - hours, month, year
-func (e DevOpsEngineer) GetTracking(engineerName string) string {
+func (e DevOpsEngineer) GetTracking() string {
 	// TODO: Fix this
 	return fmt.Sprintf("Hours: %v - %v %v", e.TrackedHours, e.TrackingMonth, e.TrackingYear)
 }

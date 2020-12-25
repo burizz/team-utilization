@@ -37,14 +37,31 @@ func main() {
 		log.Fatalf("Err: %v", jsonParseErr) // exit if json cannot be parsed
 	}
 
-	// TODO: Parse each team into separate consul kv pair
-	// TODO: Parse each team member into separate kv / pair
-	for _, team := range itgixTeams.Teams {
-		//fmt.Println(team.Name)
-		//fmt.Println(team.Engineers[i])
+	// TODO: 1. Teams structure listing everyone in a nice way
+	//	AWS :
+	//		Boris Yakimov
+	//		Person2
+	//		Person3
+	//		etc
+	//  OtherTeam :
+	//		OtherPerson1
+	//		OtherPerson2
 
+	// TODO: 2. Person structure showing his tracking
+	// Boris Yakimov:
+	//	Team: AWS
+	//	Level: Senior
+	//	Tracking:
+	//		Hours:108 - August 2020
+
+	// TODO: 3. Add calculated utilization % for each month and average overall
+	//	AWS :
+	//		Boris Yakimov - Level
+	//			- Average utilization percent
+
+	for _, team := range itgixTeams.Teams {
 		// Set KV pair in Consul
-		if setKvPairErr := storage.SetConsulKV(kv, team.Name, team.GetTeamMarshalled(team.Name)); setKvPairErr != nil {
+		if setKvPairErr := storage.SetConsulKV(kv, team.Name, team.GetTeamMarshalled()); setKvPairErr != nil {
 			log.Fatalf("Err: %v", setKvPairErr)
 		}
 
@@ -52,7 +69,7 @@ func main() {
 			fmt.Println(engineer)
 			// TODO: Fix type returned by GetName and GetTracking to []byte array
 			// or SetConsulKV to be able to use string
-			if setKvPairErr := storage.SetConsulKV(kv, engineer.GetName, engineer.GetTracking); setKvPairErr != nil {
+			if setKvPairErr := storage.SetConsulKV(kv, engineer.GetName(), engineer.GetTracking()); setKvPairErr != nil {
 				log.Fatalf("Err: %v", setKvPairErr)
 			}
 		}
