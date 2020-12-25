@@ -50,7 +50,7 @@ func SetConsulKV(kv *consul.KV, consulKey string, consulValue []byte) error {
 		// Consul kv.CAS used for Check and Set operation; returns true if successful
 		success, meta, setKvPairErr := kv.CAS(kp, nil)
 		if setKvPairErr != nil {
-			log.Errorf("Consul Set: %v : %v", kv, setKvPairErr)
+			log.Errorf("Consul Set: %v : %v", kp.Key, setKvPairErr)
 			return setKvPairErr
 		}
 
@@ -59,14 +59,12 @@ func SetConsulKV(kv *consul.KV, consulKey string, consulValue []byte) error {
 			SetConsulKV(kv, consulKey, consulValue)
 		} else {
 			log.Debugf("Consul Set: Set Request time: %v", meta.RequestTime)
-			log.Debugf("Consul Set: updated key ' %v ' to ' %v '", consulKey, string(consulValue))
+			log.Debugf("Consul Set: key: [%v] / value: [%v]", kp.Key, string(kp.Value))
 		}
-
-		log.Debugf("Consul Set: key: [%v] / value: [%v]", kp.Key, string(kp.Value))
 		return nil
 	} else {
 		// if value is not changed, skip
-		log.Infof("Consul Set: value is already present")
+		log.Infof("Consul Set: key: [%v] : skipping, value has not changed", consulKey)
 		return nil
 	}
 }
