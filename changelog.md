@@ -11,13 +11,7 @@ App
 - [ ] fetch from Consul and show all historic utilization data of the team
 - [ ] expose API endpoints for each of operation
 - [ ] unit testing
-
-FrontEnd
-- [ ] Research and test WebAssembly
-- [ ] connect to FE to API
-- [ ] import JSON from FE
-- [ ] drop-down of teams and engineers
-- [ ] nice visualization / graphs of historic data
+- [ ] HTTP handler and API calls
 
 **Infra** :
 
@@ -34,3 +28,9 @@ FrontEnd
 - [ ] Traefik - https://github.com/traefik/traefik
 - [ ] Waypoint deploy of both App and Mongo containers and connecting them together in K8s
  
+FrontEnd
+- [ ] Research and test WebAssembly
+- [ ] connect to FE to API
+- [ ] import JSON from FE
+- [ ] drop-down of teams and engineers
+- [ ] nice visualization / graphs of historic data

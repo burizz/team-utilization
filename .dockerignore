@@ -1,0 +1,8 @@
+.config
+.git
+docker-compose.yml
+Dockerfile
+*.pb.go
+Makefile
+README.md
+changelog.md
