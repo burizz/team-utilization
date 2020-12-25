@@ -28,7 +28,6 @@ type DevOpsEngineer struct {
 	TrackingYear  string `json:"trackingYear"`
 }
 
-// TODO: Test methods !
 // GetTeam method - returns a slice of all team members - type []DevOpsEngineer
 func (t Team) GetTeam(teamName string) []DevOpsEngineer {
 	return t.Engineers
@@ -43,27 +42,29 @@ func (t Team) GetTeamMarshalled(teamName string) []byte {
 	return parsedEngineers
 }
 
+// GetTeamString - returns a []byte slice of all team members
 func (t Team) GetTeamString(teamName string) string {
 	parsedEngineers, jsonMarshalErr := json.Marshal(t.Engineers)
 	if jsonMarshalErr != nil {
 		log.Errorf("Cannot marshal JSON to string %v", jsonMarshalErr)
 	}
-
 	return string(parsedEngineers)
 }
 
-// GetEngineer method - returns all details of an individual engineer
+// GetEngineer - returns all details of an engineer
 func (e DevOpsEngineer) GetEngineer(engineerName string) string {
 	// TODO: Fix this
 	return fmt.Sprintf("%v %v %v", e.Firstname, e.Lastname, e.Level)
 }
 
+// GetName - returns Firstname and Lastname of an engineer
 func (e DevOpsEngineer) GetName(engineerName string) string {
 	// TODO: Fix this
 	return fmt.Sprintf("%v %v", e.Firstname, e.Lastname)
 }
 
-func (e DevOpsEngineer) GetTracking(engineerName string) []byte {
+// GetTracking - returns tracking information - hours, month, year
+func (e DevOpsEngineer) GetTracking(engineerName string) string {
 	// TODO: Fix this
 	return fmt.Sprintf("Hours: %v - %v %v", e.TrackedHours, e.TrackingMonth, e.TrackingYear)
 }

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 
@@ -47,6 +49,7 @@ func main() {
 		}
 
 		for _, engineer := range team.Engineers {
+			fmt.Println(engineer)
 			// TODO: Fix type returned by GetName and GetTracking to []byte array
 			// or SetConsulKV to be able to use string
 			if setKvPairErr := storage.SetConsulKV(kv, engineer.GetName, engineer.GetTracking); setKvPairErr != nil {
