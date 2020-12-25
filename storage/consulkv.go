@@ -1,6 +1,8 @@
-package consulkv
+package storage
 
 import (
+	"errors"
+
 	consul "github.com/hashicorp/consul/api"
 	log "github.com/sirupsen/logrus"
 )
@@ -9,15 +11,19 @@ import (
 func GetConsulKV(kv *consul.KV, consulKey string) (consulValue string, err error) {
 	// Lookup KV pair in Consul
 	kp, meta, kvGetErr := kv.Get(consulKey, nil)
-	// TODO: rename Errors
-	log.Debugf("Consul: Get Request time: %v", meta.RequestTime)
+
 	if kvGetErr != nil {
 		log.Errorf("Consul Get: %v : %v", kv, kvGetErr)
 		return "", kvGetErr
 	}
-	// TODO: Handle if kp is nil
 
-	log.Debugf("Consul: Get key: [%v] value: [%s]\n", kp.Key, kp.Value)
+	if kp == nil {
+		missingKeyErr := errors.New("Consul Get: key does not exist")
+		return "", missingKeyErr
+	}
+
+	log.Debugf("Consul: Get key: [%v] value: [%s]\n", consulKey, string(kp.Value))
+	log.Debugf("Consul: Get Request time: %v", meta.RequestTime)
 	return string(kp.Value), nil
 }
 

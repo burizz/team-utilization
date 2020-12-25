@@ -1,6 +1,7 @@
 package config
 
 import (
+	"net/http"
 	"os"
 
 	consul "github.com/hashicorp/consul/api"
@@ -16,8 +17,17 @@ func ConsulConfig() (consulClient *consul.KV, err error) {
 	}
 
 	config := &consul.Config{
-		Address: consulAddr,
+		Address:    consulAddr,
+		Scheme:     "http",
+		HttpClient: http.DefaultClient,
 	}
+
+	// Example from - https://github.com/hotelzululima/traefik/blob/master/consul.go
+	//config := &api.Config{
+	//Address:    provider.Endpoint,
+	//Scheme:     "http",
+	//HttpClient: http.DefaultClient,
+	//}
 
 	// Initialize Consul Client
 	//client, consulInitClientErr := consul.NewClient(consul.DefaultConfig())

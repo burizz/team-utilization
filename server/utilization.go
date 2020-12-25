@@ -3,13 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 
 	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/burizz/team-utilization/config"
-	"github.com/burizz/team-utilization/storage/consulkv"
+	"github.com/burizz/team-utilization/storage"
 	"github.com/burizz/team-utilization/teams"
 )
 
@@ -18,12 +17,11 @@ func main() {
 	if loadDotEnvErr := godotenv.Load(config.ProjectRootPath + "/.env"); loadDotEnvErr != nil {
 		log.Fatalf("Error loading config: %v", loadDotEnvErr)
 	} else {
-		// TODO: Check why this doesn't print
+		// Set loglevel, format and output stream
+		config.LoggingConfig()
+
 		log.Debugf(".env file loaded successfully")
 	}
-
-	// Set loglevel, format and output stream
-	config.LoggingConfig()
 
 	// Create Consul client
 	kv, consulInitClientErr := config.ConsulConfig()
@@ -38,7 +36,7 @@ func main() {
 
 	// TODO: Move JSON func into separate package and leave just the function call
 	// Parse JSON file into team struct
-	if jsonParseErr := parseJSON(seedDataJSON, &itgixTeams); jsonParseErr != nil {
+	if jsonParseErr := storage.ParseJSON(seedDataJSON, &itgixTeams); jsonParseErr != nil {
 		log.Fatalf("Err: %v", jsonParseErr) // exit if json cannot be parsed
 	}
 
@@ -55,33 +53,12 @@ func main() {
 	}
 
 	// Put a new KV pair
-	if setKvPairErr := consulkv.SetConsulKV(kv, teamVar, teamValue); setKvPairErr != nil {
+	if setKvPairErr := storage.SetConsulKV(kv, teamVar, teamValue); setKvPairErr != nil {
 		log.Fatalf("Err: %v", setKvPairErr) // exit if Consul KV pair cannot be set
 	}
 
 	// Lookup KV pair in Consul
-	if kvPair, getKvPairErr := consulkv.GetConsulKV(kv, "team"); getKvPairErr != nil {
-		fmt.Println(kvPair)
+	if _, getKvPairErr := storage.GetConsulKV(kv, teamVar); getKvPairErr != nil {
 		log.Errorf("Err: %v", getKvPairErr)
 	}
-}
-
-// TODO: move this to a separate package
-func parseJSON(filePath string, team *teams.ItgixTeams) error {
-	// TODO: Refactor this to take the JSON from URL where it can be uploaded automatically
-	byteValue, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		log.Errorf("parseJSON: Cannot open file: %v - %v", filePath, err)
-		return err
-	}
-
-	// Unmarshal byte array into team struct
-	json.Unmarshal(byteValue, &team)
-	if err != nil {
-		log.Errorf("parseJSON: Cannot unmarshal JSON to team struct: %v", err)
-		return err
-	}
-
-	log.Infof("JSON parsed successuflly")
-	return nil
 }
