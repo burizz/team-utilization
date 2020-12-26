@@ -1,7 +1,7 @@
 ## team-utilization
 
 ### Consul Server
-```shell
+```console
 docker run \
     -d \
     -p 8500:8500 \
@@ -14,10 +14,15 @@ Application build needs to be ran from the root directory, to be able to find th
 ```
 ```
 
+Docker
+```console
+# in project root
+docker build -t utilization .
+```
 
 Consul sample
 ```go
-// Put a new KV pair
+// Put a new KV pair in Consul
 if setKvPairErr := storage.SetConsulKV(kv, teamVar, teamValue); setKvPairErr != nil {
     log.Fatalf("Err: %v", setKvPairErr) // exit if Consul KV pair cannot be set
 }
