@@ -50,7 +50,7 @@ func main() {
 			}
 
 			// TODO: figure out how to get the new months tracking here
-			newMonthTracking := "September 2020 - 142 hrs"
+			newMonthTracking := "September 2020 - 142 hrs - 88.75%"
 
 			// Take current tracking and append latest month
 			latestVal, getKvPairErr := storage.GetConsulKV(kv, keyPath)
@@ -63,12 +63,6 @@ func main() {
 			if updateKvPairErr := storage.SetConsulKV(kv, keyPath, updatedVal); updateKvPairErr != nil {
 				log.Fatalf("Err: %v", updateKvPairErr)
 			}
-
-			// TODO: Add calculated utilization % for each month and average overall
-			// ...
-			// Tracking:
-			//		- September 2020 - 142 hrs - 87%
-			// Average Utilization: 83%
 		}
 	}
 }

@@ -61,11 +61,35 @@ func (e DevOpsEngineer) GetName() string {
 	return fmt.Sprintf("%v %v", e.Firstname, e.Lastname)
 }
 
-// GetTracking - returns tracking information - hours, month, year
-func (e DevOpsEngineer) GetTracking() string {
-	return fmt.Sprintf("Tracking: \n  - %v %v - %v hrs", e.TrackingMonth, e.TrackingYear, e.TrackedHours)
-}
-
 func (e DevOpsEngineer) GetLevel() string {
 	return fmt.Sprintf("Level: %v", e.Level)
+}
+
+// GetTracking - returns tracking information - hours, month, year
+func (e DevOpsEngineer) GetTracking() string {
+	if e.TrackedHours < 0 {
+		log.Errorf("Tracked hours should be a positive number, provided %v", e.TrackedHours)
+	}
+
+	fullFte := 160
+
+	// Calculate remaining percent to fullFte
+	percentUtil := (float32(e.TrackedHours) / float32(fullFte)) * 100
+	// result of this format looks like 67.50%
+	fmtTrackingPercent := fmt.Sprintf("%.2f%%", percentUtil)
+
+	return fmt.Sprintf("Tracking: \n  - %v %v - %v hrs - %v", e.TrackingMonth, e.TrackingYear, e.TrackedHours, fmtTrackingPercent)
+}
+
+func (e DevOpsEngineer) AverageUtilization() string {
+	// TODO: figure this out
+	someSlice := []int{1, 2, 3, 4}
+	sizeOfSlice := 4
+	sumTotal := 0
+	for i := 0; i < sizeOfSlice; i++ {
+		sumTotal += (someSlice[i])
+	}
+	avg := (float64(sumTotal) / (float64(sizeOfSlice)))
+	fmt.Println(avg)
+	return ""
 }
