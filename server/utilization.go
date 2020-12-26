@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 
@@ -37,51 +35,40 @@ func main() {
 		log.Fatalf("Err: %v", jsonParseErr) // exit if json cannot be parsed
 	}
 
-	// TODO: 1. Teams structure listing everyone in a nice way
-	//	AWS :
-	//		Boris Yakimov
-	//		Person2
-	//		Person3
-	//		etc
-	//  OtherTeam :
-	//		OtherPerson1
-	//		OtherPerson2
-
-	// TODO: 2. Person structure showing his tracking
-	// Boris Yakimov:
-	//	Team: AWS
-	//	Level: Senior
-	//	Tracking:
-	//		Hours:108 - August 2020
-
-	// TODO: 3. Add calculated utilization % for each month and average overall
-	//	AWS :
-	//		Boris Yakimov - Level
-	//			- Average utilization percent
-
+	// Initial run - populate KV store with team and seed data
 	for _, team := range itgixTeams.Teams {
-		// Set KV pair in Consul
-		if setKvPairErr := storage.SetConsulKV(kv, team.Name, team.GetTeamMarshalled()); setKvPairErr != nil {
-			log.Fatalf("Err: %v", setKvPairErr)
-		}
-
+		// Update engineers in Consul KV Store
 		for _, engineer := range team.Engineers {
-			fmt.Println(engineer)
-			// TODO: Fix type returned by GetName and GetTracking to []byte array
-			// or SetConsulKV to be able to use string
-			if setKvPairErr := storage.SetConsulKV(kv, engineer.GetName(), engineer.GetTracking()); setKvPairErr != nil {
-				log.Fatalf("Err: %v", setKvPairErr)
+			// Build KV path - Team/Engineer
+			keyPath := team.Name + "/" + engineer.GetName()
+			// Build KV contents for each engineer
+			engDef := "Team: " + team.Name + "\n" + engineer.GetLevel() + "\n" + engineer.GetTracking()
+
+			// Put in Consul KV
+			if setSeedKvPairErr := storage.SetConsulKV(kv, keyPath, engDef); setSeedKvPairErr != nil {
+				log.Fatalf("Err: %v", setSeedKvPairErr)
 			}
+
+			// TODO: figure out how to get the new months tracking here
+			newMonthTracking := "September 2020 - 142 hrs"
+
+			// Take current tracking and append latest month
+			latestVal, getKvPairErr := storage.GetConsulKV(kv, keyPath)
+			if getKvPairErr != nil {
+				log.Errorf("Err: %v", getKvPairErr)
+			}
+
+			// Set both in Consul KV
+			updatedVal := latestVal + "\n" + "  - " + newMonthTracking
+			if updateKvPairErr := storage.SetConsulKV(kv, keyPath, updatedVal); updateKvPairErr != nil {
+				log.Fatalf("Err: %v", updateKvPairErr)
+			}
+
+			// TODO: Add calculated utilization % for each month and average overall
+			// ...
+			// Tracking:
+			//		- September 2020 - 142 hrs - 87%
+			// Average Utilization: 83%
 		}
 	}
-
-	// Put a new KV pair
-	//if setKvPairErr := storage.SetConsulKV(kv, teamVar, teamValue); setKvPairErr != nil {
-	//log.Fatalf("Err: %v", setKvPairErr) // exit if Consul KV pair cannot be set
-	//}
-
-	// Lookup KV pair in Consul
-	//if _, getKvPairErr := storage.GetConsulKV(kv, teamVar); getKvPairErr != nil {
-	//log.Errorf("Err: %v", getKvPairErr)
-	//}
 }

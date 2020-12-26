@@ -11,3 +11,15 @@ docker run \
 Application build needs to be ran from the root directory, to be able to find the .env and seed file
 ```
 ```
+
+
+Consul sample 
+	// Put a new KV pair
+	//if setKvPairErr := storage.SetConsulKV(kv, teamVar, teamValue); setKvPairErr != nil {
+	//log.Fatalf("Err: %v", setKvPairErr) // exit if Consul KV pair cannot be set
+	//}
+
+	// Lookup KV pair in Consul
+	//if _, getKvPairErr := storage.GetConsulKV(kv, teamVar); getKvPairErr != nil {
+	//log.Errorf("Err: %v", getKvPairErr)
+	//}

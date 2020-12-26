@@ -53,18 +53,19 @@ func (t Team) GetTeamString() string {
 
 // GetEngineer - returns all details of an engineer
 func (e DevOpsEngineer) GetEngineer() string {
-	// TODO: Fix this
 	return fmt.Sprintf("%v %v %v", e.Firstname, e.Lastname, e.Level)
 }
 
 // GetName - returns Firstname and Lastname of an engineer
 func (e DevOpsEngineer) GetName() string {
-	// TODO: Fix this
 	return fmt.Sprintf("%v %v", e.Firstname, e.Lastname)
 }
 
 // GetTracking - returns tracking information - hours, month, year
 func (e DevOpsEngineer) GetTracking() string {
-	// TODO: Fix this
-	return fmt.Sprintf("Hours: %v - %v %v", e.TrackedHours, e.TrackingMonth, e.TrackingYear)
+	return fmt.Sprintf("Tracking: \n  - %v %v - %v hrs", e.TrackingMonth, e.TrackingYear, e.TrackedHours)
+}
+
+func (e DevOpsEngineer) GetLevel() string {
+	return fmt.Sprintf("Level: %v", e.Level)
 }
