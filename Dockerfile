@@ -1,5 +1,6 @@
-# Build stage
-FROM golang:1.15-alpine AS build
+### Build stage
+FROM golang:1.15-alpine AS go-build
+#RUN apk add --no-cache git
 
 WORKDIR /go/src/github.com/burizz/team-utilization
 
@@ -15,14 +16,21 @@ COPY ./seed/ ./seed/
 COPY ./storage/ ./storage/
 COPY ./teams/ ./teams/
 
-RUN go install -v ./...
+# Run Unit tests
+#RUN CGO_ENABLED=0 go test -v test/tests.go
 
-# Run stage
+# Build binary
+RUN go build -o bin/utilization-server server/utilization.go
+# RUN go install -v ./...
 
+### Run stage
 FROM alpine:latest
+#RUN apk add ca-certificates
 
 WORKDIR /usr/local/bin
 
-COPY --from=build /go/bin/utilization .
+COPY --from=go-build /go/src/github.com/burizz/team-utilization/bin/utilization-server .
 
-CMD [ "utilization" ]
+RUN ls -alh && pwd
+
+CMD [ "utilization-server" ]

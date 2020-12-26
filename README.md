@@ -10,14 +10,15 @@ docker run \
     consul agent -server -ui -node=server-1 -bootstrap-expect=1 -client=0.0.0.0
 ```
 
-Application build needs to be ran from the root directory, to be able to find the .env and seed file
-```
+Application build 
+```console
+go build -o bin/utilization-server server/utilization.go
 ```
 
 Docker
 ```console
-# in project root
-docker build -t utilization .
+docker build -t utilization-server .
+docker run -it --rm utilization-server
 ```
 
 Consul sample
