@@ -7,10 +7,12 @@ import (
 	"github.com/360EntSecGroup-Skylar/excelize"
 )
 
-func main() {
-	f, err := excelize.OpenFile("detailed_report.xlsx")
+// TODO: Finish this - errors, returns, prints
+func ParseTrackingFromExcel(xlsFilePath string) (trackedTotal string err error) {
+	f, err := excelize.OpenFile(xlsFilePath)
 	if err != nil {
 		fmt.Printf("Cannot open excel file %v : %v\n", f, err)
+		return "", err 
 	}
 
 	var sumHours float64
@@ -20,15 +22,17 @@ func main() {
 		cellValue, err := f.GetCellValue("Detailed report", cellPosition)
 		if err != nil {
 			fmt.Errorf("Cannot get cell value: %v", err)
+			return "", err
 		}
 
 		if cellValue == "Hours" || cellValue == "" {
 			continue
 		}
 
-		convertedNum, convToIntErr := strconv.ParseFloat(cellValue, 64)
-		if convToIntErr != nil {
-			fmt.Errorf("Cannot conver %v to Int: %v", cellValue, convToIntErr)
+		convertedNum, convToFloatErr := strconv.ParseFloat(cellValue, 64)
+		if convToFloatErr != nil {
+			fmt.Errorf("Cannot convert %v to Int: %v", cellValue, convToFloatErr)
+			return "", convToFloatErr 
 		}
 
 		sumHours += convertedNum
