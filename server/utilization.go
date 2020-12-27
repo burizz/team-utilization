@@ -29,6 +29,7 @@ func main() {
 	var itgixTeams teams.ItgixTeams
 	// TODO: Better place for configuring seed file path
 	var seedDataJSON string = config.ProjectRootPath + "/seed/initial_seed_data.json"
+	var excelReport string = config.ProjectRootPath + "/seed/detailed_report.xlsx"
 
 	// Parse JSON file into team struct
 	if jsonParseErr := storage.ParseJSON(seedDataJSON, &itgixTeams); jsonParseErr != nil {
