@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
@@ -12,8 +13,25 @@ import (
 )
 
 func main() {
-	// Load .env config from project root
-	if loadDotEnvErr := godotenv.Load(config.ProjectRootPath + "/.env"); loadDotEnvErr != nil {
+	envType := os.Getenv("ENV_TYPE")
+
+	// Load .env config from project root and see import files
+	var envFile string = config.ProjectRootPath + "/.env"
+	var seedDataJSON string = config.ProjectRootPath + "/seed/initial_seed_data.json"
+	var excelReport string = config.ProjectRootPath + "/seed/detailed_report.xlsx"
+
+	var pEnvFile *string = &envFile
+	var pSeedDataJSON *string = &seedDataJSON
+	var pExcelReport *string = &excelReport
+
+	if envType == "Docker" || envType == "DOCKER" {
+		// Configure local paths for Docker env
+		*pEnvFile = ".env"
+		*pSeedDataJSON = "seed/initial_seed_data.json"
+		*pExcelReport = "seed/detailed_report.xlsx"
+	}
+
+	if loadDotEnvErr := godotenv.Load(*pEnvFile); loadDotEnvErr != nil {
 		log.Fatalf("Error loading config: %v", loadDotEnvErr)
 	} else {
 		// Set loglevel, format and output stream
@@ -29,26 +47,26 @@ func main() {
 	}
 
 	var itgixTeams teams.ItgixTeams
-	// TODO: Better place for configuring seed file path
-	var seedDataJSON string = config.ProjectRootPath + "/seed/initial_seed_data.json"
-	var excelReport string = config.ProjectRootPath + "/seed/detailed_report.xlsx"
 
 	// Parse JSON file into team struct
-	if jsonParseErr := storage.ParseJSON(seedDataJSON, &itgixTeams); jsonParseErr != nil {
+	if jsonParseErr := storage.ParseJSON(*pSeedDataJSON, &itgixTeams); jsonParseErr != nil {
 		log.Fatalf("Parse JSON Err: %v", jsonParseErr) // exit if json cannot be parsed
 	}
 
-	trackedTotal, excelParseErr := storage.ParseTrackingFromExcel(excelReport)
+	// Parse tracked hours from Excel
+	trackedTotal, excelParseErr := storage.ParseTrackingFromExcel(*pExcelReport)
 	if excelParseErr != nil {
 		log.Errorf("Parse Excel Err: %v", excelParseErr)
 	}
 
 	// TODO: Test this
-	trackingMonth, trackingYear, excelParseErr := storage.ParsePeriodFromExcel(excelReport)
+	// Parse month and year from tracking report
+	trackingMonth, trackingYear, excelParseErr := storage.ParsePeriodFromExcel(*pExcelReport)
 	if excelParseErr != nil {
 		log.Errorf("Parse Excel Err: %v", excelParseErr)
 	}
 
+	// Calculate % tracking utilization - 100% is 160 hrs
 	percentUtil, trackingCalcErr := storage.CalculateTrackingPercent(trackedTotal)
 	if trackingCalcErr != nil {
 		log.Errorf("Calculate Tracking Err: %v", trackingCalcErr)
