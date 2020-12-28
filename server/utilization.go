@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 
@@ -33,8 +35,27 @@ func main() {
 
 	// Parse JSON file into team struct
 	if jsonParseErr := storage.ParseJSON(seedDataJSON, &itgixTeams); jsonParseErr != nil {
-		log.Fatalf("Err: %v", jsonParseErr) // exit if json cannot be parsed
+		log.Fatalf("Parse JSON Err: %v", jsonParseErr) // exit if json cannot be parsed
 	}
+
+	trackedTotal, excelParseErr := storage.ParseTrackingFromExcel(excelReport)
+	if excelParseErr != nil {
+		log.Errorf("Parse Excel Err: %v", excelParseErr)
+	}
+
+	// TODO: Test this
+	trackingMonth, trackingYear, excelParseErr := storage.ParsePeriodFromExcel(excelReport)
+	if excelParseErr != nil {
+		log.Errorf("Parse Excel Err: %v", excelParseErr)
+	}
+
+	percentUtil, trackingCalcErr := storage.CalculateTrackingPercent(trackedTotal)
+	if trackingCalcErr != nil {
+		log.Errorf("Calculate Tracking Err: %v", trackingCalcErr)
+	}
+
+	// TODO: Test this
+	newMonthTracking := fmt.Sprintf("%v %v - %v hrs - %v", trackingMonth, trackingYear, trackedTotal, percentUtil)
 
 	// Initial run - populate KV store with team and seed data
 	for _, team := range itgixTeams.Teams {
@@ -49,9 +70,6 @@ func main() {
 			if setSeedKvPairErr := storage.SetConsulKV(kv, keyPath, engDef); setSeedKvPairErr != nil {
 				log.Fatalf("Err: %v", setSeedKvPairErr)
 			}
-
-			// TODO: figure out how to get the new months tracking here
-			newMonthTracking := "September 2020 - 142 hrs - 88.75%"
 
 			// Take current tracking and append latest month
 			latestVal, getKvPairErr := storage.GetConsulKV(kv, keyPath)
