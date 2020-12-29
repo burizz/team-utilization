@@ -28,13 +28,12 @@ func GetConsulKV(kv *consul.KV, consulKey string) (consulValue string, err error
 }
 
 // SetConsulKV - set Key/Value pair in Consul KV Store
-//func SetConsulKV(kv *consul.KV, consulKey string, consulValue []byte) error {
 func SetConsulKV(kv *consul.KV, consulKey string, consulValue string) error {
 	byteFmtConsulValue := []byte(consulValue)
 	// Get current value from KV store
 	pair, _, getKvPairErr := kv.Get(consulKey, nil)
 	if getKvPairErr != nil {
-		log.Errorf("Consul Set: Failed reading Consul key %v : Err : %v", consulKey, getKvPairErr)
+		log.Errorf("Consul Set: Failed reading Consul key %v : %v", consulKey, getKvPairErr)
 		return getKvPairErr
 	}
 

@@ -1,0 +1,36 @@
+version: "3.7"
+
+networks:
+      services:
+
+services: # https://didil.medium.com/building-a-simple-distributed-system-with-go-consul-39b08ffc5d2c
+  consul:
+    image: consul:1.9
+    #command: agent -bind '{{ GetInterfaceIP "eth0" }}' -client '{{ GetInterfaceIP "eth0" }}' -dev"
+    command: "agent -dev -client 0.0.0.0"
+    ports:
+        - "8300:8300"
+        - "8500:8500"
+    networks:
+        - services
+    #volumes:
+        #- consul:/consul/data
+  utilization-server:
+    # command: >
+    # --bind-interface="eth0"
+    #  --config-dir="/config"
+    #  --consul-addr="http://consul:8500"
+    #  --verbose
+    build:
+        context: .
+        #dockerfile: env/Dockerfile
+    depends_on:
+        - consul
+    #ports:
+        #- "5000:5000"
+    #environment:
+        #- CONSUL_ADDRESS=http://consul:8500
+    networks:
+        - services
+    #volumes:
+        #- apiserver:/config

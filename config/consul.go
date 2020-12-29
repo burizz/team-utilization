@@ -9,25 +9,24 @@ import (
 )
 
 func ConsulConfig() (consulClient *consul.KV, err error) {
-	consulAddr := os.Getenv("SERVER_ADRESS")
+	consulAddr := os.Getenv("CONSUL_ADDRESS")
 
 	// If not provided set default localhost value
 	if len(consulAddr) == 0 {
 		consulAddr = "127.0.0.1:8500"
 	}
 
+	log.Debugf("Consul Address is set to %v", consulAddr)
+
+	// TODO: fix this for Docker - https://didil.medium.com/building-a-simple-distributed-system-with-go-consul-39b08ffc5d2c
+	//config := api.DefaultConfig()
+	//config.Address = "consul:8500"
+
 	config := &consul.Config{
 		Address:    consulAddr,
 		Scheme:     "http",
 		HttpClient: http.DefaultClient,
 	}
-
-	// Example from - https://github.com/hotelzululima/traefik/blob/master/consul.go
-	//config := &api.Config{
-	//Address:    provider.Endpoint,
-	//Scheme:     "http",
-	//HttpClient: http.DefaultClient,
-	//}
 
 	// Initialize Consul Client
 	//client, consulInitClientErr := consul.NewClient(consul.DefaultConfig())
