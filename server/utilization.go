@@ -40,6 +40,9 @@ func main() {
 		log.Debugf(".env file loaded successfully")
 	}
 
+	// Name of the excel worksheet with tracking details
+	xlsWorksheet := os.Getenv("XLS_WORKSHEET")
+
 	// Create Consul client
 	kv, consulInitClientErr := config.ConsulConfig()
 	if consulInitClientErr != nil {
@@ -54,14 +57,13 @@ func main() {
 	}
 
 	// Parse tracked hours from Excel
-	trackedTotal, excelParseErr := storage.ParseTrackingFromExcel(*pExcelReport)
+	trackedTotal, excelParseErr := storage.ParseTrackingFromExcel(*pExcelReport, xlsWorksheet)
 	if excelParseErr != nil {
 		log.Errorf("Parse Excel Err: %v", excelParseErr)
 	}
 
-	// TODO: Test this
 	// Parse month and year from tracking report
-	trackingMonth, trackingYear, excelParseErr := storage.ParsePeriodFromExcel(*pExcelReport)
+	trackingMonth, trackingYear, excelParseErr := storage.ParsePeriodFromExcel(*pExcelReport, xlsWorksheet)
 	if excelParseErr != nil {
 		log.Errorf("Parse Excel Err: %v", excelParseErr)
 	}
@@ -72,7 +74,7 @@ func main() {
 		log.Errorf("Calculate Tracking Err: %v", trackingCalcErr)
 	}
 
-	// TODO: Test this
+	// Format tracking month, should look like "- November 2020 - 108 hrs - 67.50%"
 	newMonthTracking := fmt.Sprintf("%v %v - %v hrs - %v", trackingMonth, trackingYear, trackedTotal, percentUtil)
 
 	// Initial run - populate KV store with team and seed data
