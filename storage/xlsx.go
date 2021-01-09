@@ -53,7 +53,6 @@ func ParsePeriodFromExcel(xlsFilePath string, xlsWorksheet string) (trackingMont
 		return "", "", openExcelErr
 	}
 
-	// TODO: parameterize worksheet name
 	// TODO: verify if there is a better field to get from this excel
 	cellValue := f.GetCellValue(xlsWorksheet, "A5")
 
