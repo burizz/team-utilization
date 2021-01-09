@@ -29,7 +29,6 @@ func ConsulConfig() (consulClient *consul.KV, err error) {
 	}
 
 	// Initialize Consul Client
-	//client, consulInitClientErr := consul.NewClient(consul.DefaultConfig())
 	client, consulInitClientErr := consul.NewClient(config)
 	if consulInitClientErr != nil {
 		log.Errorf("Error cannot create new consul client: %v", consulInitClientErr)
