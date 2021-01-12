@@ -104,4 +104,9 @@ func main() {
 			}
 		}
 	}
+
+	// Test channel to block main function from exiting
+	done := make(chan bool)
+	<-done
+	log.Infof("Finished execution")
 }
